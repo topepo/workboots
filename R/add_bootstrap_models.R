@@ -99,8 +99,6 @@ fit_single_model <- function(split,
     return(NULL)
   }
 
-  model <- butcher::butcher(model)
-
   # get predicted var name
   # TODO update from main
   pred_name <- names(model$pre$mold$blueprint$ptypes$outcomes)
