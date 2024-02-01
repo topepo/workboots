@@ -2,7 +2,7 @@
 % Please edit documentation in R/add_bootstrap_models.R
 \name{add_bootstrap_models}
 \alias{add_bootstrap_models}
-\title{Fit from a workflow using many bootstrap resamples.}
+\title{Fit a workflow using many bootstrap resamples.}
 \usage{
 add_bootstrap_models(
   resamples,
@@ -28,6 +28,6 @@ of training to console.}
 \item{...}{Additional params passed to \code{rsample::bootstraps()}.}
 }
 \description{
-Generate a prediction interval from arbitrary model types using bootstrap
-resampling. \code{add_bootstrap_models()} fits a model to each resample.
+For the purpose of creating bootstrap prediction intervals,
+\code{add_bootstrap_models()} fits a model to each resample.
 }

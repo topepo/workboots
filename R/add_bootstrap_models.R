@@ -1,7 +1,7 @@
-#' Fit from a workflow using many bootstrap resamples.
+#' Fit a workflow using many bootstrap resamples.
 #'
-#' Generate a prediction interval from arbitrary model types using bootstrap
-#' resampling. `add_bootstrap_models()` fits a model to each resample.
+#' For the purpose of creating bootstrap prediction intervals,
+#' `add_bootstrap_models()` fits a model to each resample.
 #'
 #' @param resamples A resampling object created by [rsample::bootstraps()]. If
 #' the option `apparent = TRUE` was used to create it, the corresponding row
@@ -16,40 +16,15 @@ add_bootstrap_models <- function(resamples,
                                  interval = c("prediction", "confidence"),
                                  verbose = FALSE,
                                  ...) {
-
-  if (!inherits(resamples, "bootstraps")) {
-    cli::cli_abort("{.arg resamples} should be generated from {.fn rsample::bootstraps}.")
-  }
-  # TODO check mode
-
-  apparently <- resamples$id == "Apparent"
-  if (any(apparently)) {
-    resamples <- resamples[!apparently, ]
-  }
-
   # convert interval type
   interval <- rlang::arg_match(interval)
 
-  # # check arguments
-  # workboots:::assert_workflow(workflow)
-  # workboots:::assert_n(n)
+  # check arguments
+  workboots:::assert_workflow(workflow)
   # workboots:::assert_pred_data(workflow, training_data, "training")
 
-  # check apparent
-
-  # warn if low n
-  if (nrow(resamples) < 2000) {
-
-    rlang::warn(
-      paste0("At least 2000 resamples recommended for stable results.")
-    )
-
-  }
-
-  req_pkgs <- c("workboots", "parsnip", "workflows", "rsample",
-                generics::required_pkgs(workflow$.models[[1]]$fit))
-  req_pkgs <- unique(req_pkgs)
-  rlang::check_installed(req_pkgs)
+  resamples <- check_resamples(resamples)
+  req_pkgs <- check_installs_fitting(workflow)
 
   model_res <-
     future.apply::future_lapply(
@@ -72,8 +47,6 @@ add_bootstrap_models <- function(resamples,
   resamples$.models <- model_res
 
   resamples$splits <- NULL
-
-  # TODO make control function?
 
   class(resamples) <- c("bootstrapped_models", class(resamples))
   resamples
@@ -100,8 +73,6 @@ fit_single_model <- function(split,
   # get predicted var name
   # TODO update from main
   pred_name <- names(model$pre$mold$blueprint$ptypes$outcomes)
-
-  # TODO make this a parameter (default = "prediction") for a control object?
 
   # apply prediction interval using bootstrap 632+ estimate
   # if not, just returns absolute prediction (when summarised, this generates a confidence interval)

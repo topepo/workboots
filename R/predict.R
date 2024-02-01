@@ -12,10 +12,7 @@
 #'
 predict.bootstrapped_models <- function(object, new_data, ..., interval_width) {
 
-  req_pkgs <- c("workboots", "parsnip", "workflows",
-                generics::required_pkgs(object$.models[[1]]$fit))
-  req_pkgs <- unique(req_pkgs)
-  rlang::check_installed(req_pkgs)
+  req_pkgs <- check_installs_predicting(object$.models[[1]]$fit)
 
   pred_res <-
     future.apply::future_lapply(

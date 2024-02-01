@@ -7,13 +7,19 @@ assert_workflow <- function(workflow) {
     msg = "argument `workflow` must be of class \"workflow\"."
   )
 
-  # assert that there are no remaining tuning parameters
-  n_params <- length(workflow$fit$actions$model$spec$args)
+  # Check for a regression model
+  # wflow_mode <-
+  #   workflow %>%
+  #   hardhat:::extract_fit_parsnip() %>%
+  #   purrr::pluck("spec") %>%
+  #   purrr::pluck("mode")
+  #
+  # if (wflow_mode != "regression") {
+  #   cli::cli_abort("workboots only works with regression models. The mode \\
+  #                   of this model is {.val {wflow_mode}}.")
+  # }
 
-  purrr::walk(
-    seq(1, n_params, 1),
-    ~assert_tune(workflow, .x)
-  )
+  # check that it is fitted
 
 }
 
@@ -147,4 +153,40 @@ assert_interval <- function(interval_width) {
     msg = "argument `interval_width` must be between [0, 1]."
   )
 
+}
+
+check_installs_fitting <- function(x) {
+  req_pkgs <- c("workboots", "parsnip", "workflows", "rsample",
+                generics::required_pkgs(x))
+  req_pkgs <- unique(req_pkgs)
+  rlang::check_installed(req_pkgs)
+  req_pkgs
+}
+
+
+check_installs_predicting <- function(x) {
+  req_pkgs <- c("workboots", "parsnip", "workflows",
+                generics::required_pkgs(x))
+  req_pkgs <- unique(req_pkgs)
+  rlang::check_installed(req_pkgs)
+  req_pkgs
+}
+
+check_resamples <- function(x) {
+  if (!inherits(x, "bootstraps")) {
+    cli::cli_abort("{.arg resamples} should be generated from {.fn rsample::bootstraps}.")
+  }
+
+  # Exclude apparent samples, if any
+  apparently <- x$id == "Apparent"
+  if (any(x)) {
+    x <- x[!apparently, ]
+  }
+
+  # warn if low n
+  if (nrow(x) < 2000) {
+    cli::cli_warn("At least 2000 resamples recommended for stable results.")
+  }
+
+  x
 }
