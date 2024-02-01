@@ -17,6 +17,10 @@
 \item{interval_width}{The coverage rate of the intervals (e.g. 0.95 for a
 95\% interval).}
 }
+\value{
+A tibble with columns \code{.pred_lower}, \code{.pred} (the median), and
+\code{.pred_upper}.
+}
 \description{
 Calculate bootstrap prediction intervals for new samples.
 }

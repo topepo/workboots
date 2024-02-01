@@ -6,6 +6,8 @@
 #' @param interval_width The coverage rate of the intervals (e.g. 0.95 for a
 #' 95% interval).
 #' @param ... Not used.
+#' @return A tibble with columns `.pred_lower`, `.pred` (the median), and
+#' `.pred_upper`.
 #' @export
 #'
 predict.bootstrapped_models <- function(object, new_data, ..., interval_width) {
@@ -32,7 +34,7 @@ predict.bootstrapped_models <- function(object, new_data, ..., interval_width) {
   val_lower <- apply(pred_res, 1, function(x) unname(quantile(x, probs = low_quant, na.rm = TRUE)))
   val_median <- apply(pred_res, 1, function(x) stats::median(x, na.rm = TRUE))
   val_upper <- apply(pred_res, 1, function(x) unname(quantile(x, probs = high_quant, na.rm = TRUE)))
-  tibble::tibble(.lower = val_lower, .pred = val_median, .upper = val_upper)
+  tibble::tibble(.pred_lower = val_lower, .pred = val_median, .pred_upper = val_upper)
 }
 
 
