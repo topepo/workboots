@@ -179,7 +179,7 @@ check_resamples <- function(x) {
 
   # Exclude apparent samples, if any
   apparently <- x$id == "Apparent"
-  if (any(x)) {
+  if (any(apparently)) {
     x <- x[!apparently, ]
   }
 
