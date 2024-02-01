@@ -30,7 +30,7 @@ predict.bootstrapped_models <- function(x, new_data, ..., interval_width) {
   low_quant <- (1 - interval_width) / 2
   high_quant <- 1 - low_quant
   val_lower <- apply(pred_res, 1, function(x) unname(quantile(x, probs = low_quant, na.rm = TRUE)))
-  val_median <- apply(pred_res, 1, function(x) median(x, na.rm = TRUE))
+  val_median <- apply(pred_res, 1, function(x) stats::median(x, na.rm = TRUE))
   val_upper <- apply(pred_res, 1, function(x) unname(quantile(x, probs = high_quant, na.rm = TRUE)))
   tibble::tibble(.lower = val_lower, .pred = val_median, .upper = val_upper)
 }
