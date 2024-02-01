@@ -75,7 +75,6 @@ add_bootstrap_models <- function(resamples,
     resamples$splits <- NULL
   }
 
-  # TODO attributes to save? interval? req_pkgs?
   # TODO make control function?
 
   class(resamples) <- c("bootstrapped_models", class(resamples))
@@ -146,7 +145,7 @@ fit_single_model <- function(split,
     sd_resid <- weight * sd_oob + (1 - weight) * sd_train
 
   } else {
-    sd_resid <- NA_dbl
+    sd_resid <- NA_real_
   }
 
   # use progressr?
