@@ -47,7 +47,7 @@ add_bootstrap_models <- function(resamples,
   }
 
   req_pkgs <- c("workboots", "parsnip", "workflows", "rsample",
-                generics::required_pkgs(x$.models[[1]]$fit))
+                generics::required_pkgs(workflow$.models[[1]]$fit))
   req_pkgs <- unique(req_pkgs)
   rlang::check_installed(req_pkgs)
 
