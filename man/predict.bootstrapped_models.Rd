@@ -2,10 +2,21 @@
 % Please edit documentation in R/predict.R
 \name{predict.bootstrapped_models}
 \alias{predict.bootstrapped_models}
-\title{Calculate bootstrap prediciton intervals for new samples}
+\title{Calculate bootstrap prediction intervals for new samples.}
 \usage{
 \method{predict}{bootstrapped_models}(x, new_data, ..., interval_width)
 }
+\arguments{
+\item{x}{An object of class \code{"bootstrapped_models"} created by
+\code{\link[=add_bootstrap_models]{add_bootstrap_models()}}.}
+
+\item{new_data}{A data frame of predictor values.}
+
+\item{...}{Not used.}
+
+\item{interval_width}{The coverage rate of the intervals (e.g. 0.95 for a
+95\% interval).}
+}
 \description{
-Calculate bootstrap prediciton intervals for new samples
+Calculate bootstrap prediction intervals for new samples.
 }
