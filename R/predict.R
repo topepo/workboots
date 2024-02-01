@@ -10,12 +10,17 @@
 #'
 predict.bootstrapped_models <- function(x, new_data, ..., interval_width) {
 
+  req_pkgs <- c("workboots", "parsnip", "workflows",
+                generics::required_pkgs(x$.models[[1]]$fit))
+  req_pkgs <- unique(req_pkgs)
+  rlang::check_installed(req_pkgs)
+
   pred_res <-
     future.apply::future_lapply(
       x$.models,
       predict_new,
       new_data = new_data,
-      future.packages = required_pkgs(x$.models[[1]]$fit),
+      future.packages = req_pkgs,
       future.seed = TRUE,
       future.stdout = TRUE
     )
@@ -32,6 +37,7 @@ predict.bootstrapped_models <- function(x, new_data, ..., interval_width) {
 
 
 predict_new <- function(x, new_data) {
+  # TODO unbundle?
   n <- nrow(new_data)
   res <- predict(x$fit, new_data)
   if (x$interval == "prediction") {

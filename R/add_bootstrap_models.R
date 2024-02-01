@@ -46,7 +46,10 @@ add_bootstrap_models <- function(resamples,
 
   }
 
-  req_pkgs <- c("rsample", "workflows",  required_pkgs(workflow))
+  req_pkgs <- c("workboots", "parsnip", "workflows", "rsample",
+                generics::required_pkgs(x$.models[[1]]$fit))
+  req_pkgs <- unique(req_pkgs)
+  rlang::check_installed(req_pkgs)
 
   model_res <-
     future.apply::future_lapply(
@@ -97,7 +100,7 @@ fit_single_model <- function(split,
     return(NULL)
   }
 
-  # model <- butcher::butcher(model)
+  model <- butcher::butcher(model)
 
   # get predicted var name
   # TODO update from main
