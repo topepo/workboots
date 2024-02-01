@@ -1,6 +1,6 @@
 #' Calculate bootstrap prediction intervals for new samples.
 #'
-#' @param x An object of class `"bootstrapped_models"` created by
+#' @param object An object of class `"bootstrapped_models"` created by
 #' [add_bootstrap_models()].
 #' @param new_data A data frame of predictor values.
 #' @param interval_width The coverage rate of the intervals (e.g. 0.95 for a
@@ -8,16 +8,16 @@
 #' @param ... Not used.
 #' @export
 #'
-predict.bootstrapped_models <- function(x, new_data, ..., interval_width) {
+predict.bootstrapped_models <- function(object, new_data, ..., interval_width) {
 
   req_pkgs <- c("workboots", "parsnip", "workflows",
-                generics::required_pkgs(x$.models[[1]]$fit))
+                generics::required_pkgs(object$.models[[1]]$fit))
   req_pkgs <- unique(req_pkgs)
   rlang::check_installed(req_pkgs)
 
   pred_res <-
     future.apply::future_lapply(
-      x$.models,
+      object$.models,
       predict_new,
       new_data = new_data,
       future.packages = req_pkgs,

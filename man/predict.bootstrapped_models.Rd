@@ -4,10 +4,10 @@
 \alias{predict.bootstrapped_models}
 \title{Calculate bootstrap prediction intervals for new samples.}
 \usage{
-\method{predict}{bootstrapped_models}(x, new_data, ..., interval_width)
+\method{predict}{bootstrapped_models}(object, new_data, ..., interval_width)
 }
 \arguments{
-\item{x}{An object of class \code{"bootstrapped_models"} created by
+\item{object}{An object of class \code{"bootstrapped_models"} created by
 \code{\link[=add_bootstrap_models]{add_bootstrap_models()}}.}
 
 \item{new_data}{A data frame of predictor values.}
