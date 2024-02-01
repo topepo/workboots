@@ -60,6 +60,12 @@ add_bootstrap_models <- function(resamples,
       future.stdout = TRUE
     )
 
+  # Check for failed models
+  fit_failed <- purrr::map_lgl(model_res, is.null)
+  if (any(fit_failed)) {
+    resamples <- resamples[!fit_failed, ]
+    model_res <- model_res[!fit_failed]
+  }
   resamples$.models <- model_res
 
   if (remove_splits) {
@@ -86,12 +92,18 @@ fit_single_model <- function(split,
   boot_oob <- rsample::assessment(split)
 
   # fit workflow to training data
-  model <- generics::fit(workflow, boot_train)
+  model <- try(generics::fit(workflow, boot_train), silent = TRUE)
+  if (inherits(model, "try-error")) {
+    return(NULL)
+  }
+
   # model <- butcher::butcher(model)
 
   # get predicted var name
   # TODO update from main
   pred_name <- names(model$pre$mold$blueprint$ptypes$outcomes)
+
+  # TODO make this a parameter (default = "prediction") for a control object?
 
   # apply prediction interval using bootstrap 632+ estimate
   # if not, just returns absolute prediction (when summarised, this generates a confidence interval)
@@ -109,6 +121,7 @@ fit_single_model <- function(split,
     resids_oob <- actuals_oob - preds_oob
     resids_oob <- resids_oob - mean(resids_oob, na.rm = TRUE)
 
+    # TODO lose a dependency by writing a simple RMSE function (that takes care of NA values too)
     # calculate no-information error rate (rmse_ni) with RMSE as loss function
     combos <- tidyr::crossing(actuals_train, preds_train)
     rmse_ni <- Metrics::rmse(combos$actuals_train, combos$preds_train)
