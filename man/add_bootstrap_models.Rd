@@ -9,11 +9,14 @@ add_bootstrap_models(
   workflow,
   interval = c("prediction", "confidence"),
   verbose = FALSE,
-  remove_splits = TRUE,
   ...
 )
 }
 \arguments{
+\item{resamples}{A resampling object created by \code{\link[rsample:bootstraps]{rsample::bootstraps()}}. If
+the option \code{apparent = TRUE} was used to create it, the corresponding row
+is removed.}
+
 \item{workflow}{An un-fitted workflow object.}
 
 \item{interval}{One of \code{prediction}, \code{confidence}. Specifies the interval
@@ -21,8 +24,6 @@ type to be generated.}
 
 \item{verbose}{A logical. Defaults to \code{FALSE}. If set to \code{TRUE}, prints progress
 of training to console.}
-
-\item{remove_splits}{A logical to remove the \code{splits} column.}
 
 \item{...}{Additional params passed to \code{rsample::bootstraps()}.}
 }

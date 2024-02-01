@@ -3,10 +3,11 @@
 #' Generate a prediction interval from arbitrary model types using bootstrap
 #' resampling. `add_bootstrap_models()` fits a model to each resample.
 #'
-#'
+#' @param resamples A resampling object created by [rsample::bootstraps()]. If
+#' the option `apparent = TRUE` was used to create it, the corresponding row
+#' is removed.
 #' @param interval One of `prediction`, `confidence`. Specifies the interval
 #' type to be generated.
-#' @param remove_splits A logical to remove the `splits` column.
 #' @inheritParams vi_boots
 #'
 #' @export
@@ -14,7 +15,6 @@ add_bootstrap_models <- function(resamples,
                                  workflow,
                                  interval = c("prediction", "confidence"),
                                  verbose = FALSE,
-                                 remove_splits = TRUE,
                                  ...) {
 
   if (!inherits(resamples, "bootstraps")) {
@@ -71,9 +71,7 @@ add_bootstrap_models <- function(resamples,
   }
   resamples$.models <- model_res
 
-  if (remove_splits) {
-    resamples$splits <- NULL
-  }
+  resamples$splits <- NULL
 
   # TODO make control function?
 
